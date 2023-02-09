@@ -51,6 +51,15 @@ export async function update(req, res) {
     const {name, phone, cpf, birthday}=res.locals.customer;
     const {id}=req.params;
 
+    const cpfCustomerExists= await connection.query(
+        "SELECT * FROM customers WHERE cpf=$1",
+        [cpf]
+    );
+
+    if(cpfCustomerExists.rowCount!==0 && cpfCustomerExists.rows[0].id!==Number(req.params.id)){
+        return res.sendStatus(409);
+    }
+
     try{
         await connection.query(
             "UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5",
