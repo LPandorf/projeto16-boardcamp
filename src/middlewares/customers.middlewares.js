@@ -3,6 +3,10 @@ import { connection } from "../database.js";
 
 export async function validSchemaCustomer(req, res, next) {
     const customer=req.body;
+
+    if(customer.cpf!==Number){
+        return res.sendStatus(400);
+    }
   
     const {error}= customerSchema.validate(customer, {abortEarly:false});
     
@@ -26,7 +30,9 @@ export async function validSchemaCustomer(req, res, next) {
 
 export async function validSchemaCustomerForUpdate(req, res, next) {
     const customer=req.body;
-
+    if(customer.cpf!==Number){
+        return res.sendStatus(400);
+    }
     const {error}= customerSchema.validate(customer, {abortEarly:false});
 
     if(error){
