@@ -21,8 +21,8 @@ export async function findAll(req, res) {
 
     try{
         const customers= await connection.query("SELECT * FROM customers");
-/* customers.rows */
-        res.send(customers.rows[0]);
+
+        res.send(customers.rows);
     }catch(err){
         res.status(500).send(err.message);
     }
@@ -41,7 +41,7 @@ export async function findById(req, res) {
             return res.sendStatus(404);
         }
 
-        res.send(rows);
+        res.send(rows[0]);
     }catch(err){
         res.status(500).send(err.message);
     }
