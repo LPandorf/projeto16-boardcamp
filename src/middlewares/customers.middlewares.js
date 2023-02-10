@@ -3,15 +3,14 @@ import { connection } from "../database.js";
 
 export async function validSchemaCustomer(req, res, next) {
     const customer=req.body;
-
+  
     const {error}= customerSchema.validate(customer, {abortEarly:false});
-
+    
     if(error){
         const errors=error.details.map((detail)=>detail.message);
-        console.log("4");
         return res.status(400).send({errors});
     }
-
+   
     const cpfCustomerExists= await connection.query(
         "SELECT * FROM customers WHERE cpf=$1",
         [customer.cpf]
