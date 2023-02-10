@@ -21,8 +21,8 @@ export async function findAll(req, res) {
 
     try{
         const customers= await connection.query("SELECT * FROM customers");
-
-        res.send(customers.rows);
+/* customers.rows */
+        res.send(customers.rows[0]);
     }catch(err){
         res.status(500).send(err.message);
     }
