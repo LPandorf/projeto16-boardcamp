@@ -1,5 +1,28 @@
-import { rentalSchema } from "../schemas/rentals.schema.js";
+import { rentalSchema, rentalRequestSchema } from "../schemas/rentals.schema.js";
 import { connection } from "../database.js";
+
+export async function validSchemaRentalsRequests(req, res, next){
+    const {customerId, gameId, daysRented}=req.body;
+
+    const rentalRequest={
+        customerId,
+        gameId,
+        daysRented
+    }
+
+    try{
+        const {error}= rentalRequestSchema.validate(rentalRequest, {abortEarly:false});
+        
+        if(error){
+            const errors=error.details.map((detail)=>detail.message);
+            return res.status(400).send({errors});
+        }
+
+        next()
+    }catch(err){
+        res.status(500).send(err.message);
+    }
+}
 
 export async function validSchemaRentals(req, res, next) {
     const {customerId, gameId, daysRented}=req.body;
