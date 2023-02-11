@@ -53,7 +53,7 @@ export async function gameIsAvailable(req, res, next){
             [game.rows[0].id]
         );
 
-        if(rentals.rows.length>game.rows[0].stockTotal){
+        if(rentals.rows.length>=game.rows[0].stockTotal){
             return res.sendStatus(400);
         }
         
