@@ -33,6 +33,12 @@ export async function validSchemaRentals(req, res, next) {
         if(customerIdExists.rowCount===0){
             return res.sendStatus(400);
         }
+
+        const gameIdExists=await connection.query("SELECT * FROM games WHERE id=$1",[gameId]);
+
+        if(gameIdExists.rowCount===0){
+            return res.sendStatus(400);
+        }
         
         res.locals.rental=rental;
         res.locals.game=game;
