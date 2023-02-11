@@ -93,5 +93,31 @@ export async function gameReturn(req, res){
 }
 
 export async function exclude(req, res){
-    
+    const {id}=req.params;
+
+    try{
+        const rentals=await connection.query(
+            "SELECT * FROM rentals WHERE id=$1",
+            [id]
+        );
+
+        const rental=rentals.rows[0];
+
+        if(rentals.rowCount===0){
+            return res.sendStatus(404);
+        }
+            
+        if(!rental.returnDate){
+            return res.sendStatus(400);
+        }
+
+        await connection.query(
+            "DELETE FROM rentals WHERE id=$1",
+            [id]
+        )
+
+        res.sendStatus(200);
+    }catch(err){
+        res.status(500).send(err.message);
+    }
 }
