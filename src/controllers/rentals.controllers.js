@@ -72,13 +72,13 @@ export async function gameReturn(req, res){
         }
             
         const time= new Date().getTime()- new Date(rental.rentDate).getTime();
-        const timeInDays= Math.floor(time/86400);
+        const timeInDays= Math.floor(time/(24*3600*1000));
         
         let delayFee=0;
 
         if(timeInDays>rental.daysRented){
             const delay=timeInDays-rental.daysRented;
-            delayFee=delay*rental.originalPrice;
+            delayFee=(delay*rental.originalPrice)/3;
         }
 
         await connection.query(
