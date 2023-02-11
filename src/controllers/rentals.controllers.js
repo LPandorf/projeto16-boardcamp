@@ -16,15 +16,16 @@ export async function create(req, res){
 }
 
 export async function findAll(req, res){
-    const {customerId,gameId}=req.query;
-
+    
     try{
         const costumerRentals=await connection.query(
-            'SELECT * FROM rentals JOIN customers ON rentals."customerID"=customers.id'
+            'SELECT * FROM rentals JOIN customers ON rentals."customerId"=customers.id'
         )
+        
         const rentedGames=await connection.query(
             'SELECT * FROM rentals JOIN games ON rentals."gameId"=games.id'
         )
+        
         const joined= costumerRentals.rows.map((x)=>{
             return({
                 id: x.id,
@@ -36,16 +37,16 @@ export async function findAll(req, res){
                 originalPrice: x.originalPrice,
                 delayFee: x.delayFee,
                 customer: {
-                    id: x.customer.id,
+                    id: x.customerId,
                     name: x.name,
                 },
                 game: {
-                    id: x.game.id,
+                    id: x.gameId,
                     name: rentedGames.rows[x.gameId-1].name
                 }
             })
         })
-
+        console.log("4")
         /* const {rows} = customerId ? await connection.query(
                 global+'WHERE "customerId"=$1',
                 [Number(customerId)]
@@ -53,8 +54,8 @@ export async function findAll(req, res){
                 global+'WHERE "gameId"=$1',
                 [Number(gameId)]
             ):  joined;
-
-        res.send(rows); */
+        console.log(rows); */
+        //res.send(rows);       
         res.send(joined);
         //res.sendStatus(201);
     }catch(err){
