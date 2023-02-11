@@ -62,8 +62,12 @@ export async function gameReturn(req, res){
         );
 
         const rental=rentals.rows[0];
+
+        if(rentals.rowCount===0){
+            return res.sendStatus(404);
+        }
             
-        if(rentals.rowCount===0 || rental.returnDate){
+        if(rental.returnDate){
             return res.sendStatus(400);
         }
             
