@@ -59,8 +59,8 @@ export async function gameReturn(req, res){
         const rentals=await connection.query(
             "SELECT * FROM rentals WHERE id=$1",
             [id]
-        )
-            
+        );
+
         const rental=rentals.rows[0];
             
         if(rental.rowCount===0 || rental.returnDate){
