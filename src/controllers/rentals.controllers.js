@@ -72,7 +72,7 @@ export async function gameReturn(req, res){
         }
             
         const time= new Date().getTime()- new Date(rental.rentDate).getTime();
-        const timeInDays= Math.floor(time/(24*3600*1000));
+        const timeInDays= Math.floor(time/86400);
         
         let delayFee=0;
 
