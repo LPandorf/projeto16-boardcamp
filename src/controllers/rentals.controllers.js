@@ -45,26 +45,47 @@ export async function findAll(req, res){
                     name: rentedGames.rows[x.gameId-1].name
                 }
             })
-        })
-        console.log("4")
-        /* const {rows} = customerId ? await connection.query(
-                global+'WHERE "customerId"=$1',
-                [Number(customerId)]
-            ): gameId ?  await connection.query(
-                global+'WHERE "gameId"=$1',
-                [Number(gameId)]
-            ):  joined;
-        console.log(rows); */
-        //res.send(rows);       
+        })    
         res.send(joined);
-        //res.sendStatus(201);
     }catch(err){
         res.status(500).send(err.message);
     }
 }
 
 export async function gameReturn(req, res){
+    const {id}=req.params;
     
+    try{
+        const rentals=await connection.query(
+            "SELECT * FROM rentals WHERE id=$1",
+            [id]
+        )
+            
+        const rental=rentals.rows[0];
+            
+        if(rental.rowCount===0 || rental.returnDate){
+            return res.sendStatus(400);
+        }
+            
+        const time= new Date().getTime()- new Date(rental.rentDate).getTime();
+        const timeInDays= Math.floor(time/(24*3600*1000));
+        
+        let delayFee=0;
+
+        if(timeInDays>rental.daysRented){
+            const delay=timeInDays-rental.daysRented;
+            delayFee=delay*rental.originalPrice;
+        }
+
+        await connection.query(
+            'UPDATE rentals SET "returnDate"=NOW(), "delayFee"=$1 WHERE id=$2',
+            [delayFee, id]
+        )
+        
+        res.sendStatus(200);
+    }catch(err){
+        res.status(500).send(err.message);
+    }
 }
 
 export async function exclude(req, res){
